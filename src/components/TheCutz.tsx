@@ -25,12 +25,12 @@ export function TheCutz() {
 
       <div className="mt-10 grid gap-5 md:grid-cols-2">
         {options.map((option, i) => (
-          <Reveal key={option.title} delay={i * 120}>
+            <Reveal key={option.title} delay={i * 120} className="h-full">
               <a 
               href="#book"
-              className="group block rounded-2xl border border-line bg-ink-2 p-7 transition hover:border-gold"
+                className="group flex h-full flex-col rounded-2xl border border-line bg-ink-2 p-7 transition hover:border-gold"
             >
-              <p className="font-mono text-xs uppercase tracking-[0.25em] text-muted">
+            <p className="mt-auto pt-8 text-sm font-semibold transition group-hover:text-gold">
                 {option.label}
               </p>
               <div className="mt-6 flex items-end justify-between gap-4">
