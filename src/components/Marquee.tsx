@@ -1,4 +1,4 @@
-const words = ["Sharp lines", "Clean fades", "By appointment", "Studio or travel", "Eblendz"];
+const words = ["Sharp cutz", "Clean fades", "By appointment", "Studio or travel", "Eblendz"];
 
 export function Marquee() {
   // Repeat the words so the strip is long enough to loop without a gap.

@@ -12,7 +12,7 @@ export function Hero() {
 
                 <div className="mt-6 flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
                     <p className="font-serif text-3xl italic sm:text-4xl">
-                        Sharp lines. Clean fades.
+                        Sharp cutz. Clean fades.
                     </p>
 
                     <div className="flex gap-3">
