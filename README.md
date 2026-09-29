@@ -1,5 +1,3 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
-
 # Eblendz Booking
 
 A booking website for a local college barber. Clients see live services and prices, pick an open time, and book. Every booking goes straight into the barber's Square calendar. No more booking through DMs.
@@ -8,7 +6,7 @@ A booking website for a local college barber. Clients see live services and pric
 
 ## Why I built this
 
-TODO: 2–3 sentences in your own words. Example direction: my friend was booking cuts through Instagram DMs and texts, double-booking happened, so I interviewed him, wrote requirements, designed it in UML, and started building.
+My friend cuts hair while going to school and working another job, and he was booking every appointment through Instagram DMs and texts. Clients asked the same price questions over and over, and slots got double-booked. I interviewed him, wrote requirements, designed the system in UML, and I'm building a site that books straight into his Square calendar.
 
 ## Tech stack
 
@@ -45,4 +43,5 @@ Then open http://localhost:3000.
 
 ## What I'm learning
 
-TODO: add as you go (e.g., file-based routing, server vs. client components, keeping API keys off the browser).
+- File-based routing: folders in src/app become URLs.
+- Git basics: commit, push, and pull when GitHub is ahead.
