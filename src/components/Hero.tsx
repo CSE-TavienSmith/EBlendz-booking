@@ -1,6 +1,6 @@
 export function Hero() {
     return (
-        <section className="flex min-h-[88vh] flex-col justify-end">
+        <section id="top" className="flex min-h-[88vh] flex-col justify-end">
             <div className="mx-auto w-full max-w-6xl px-4 pb-14 sm:px-6">
                 <p className="font-mono text-xs uppercase tracking-[0.3em] text-muted">
                     Columbia, SC · By appointment only
