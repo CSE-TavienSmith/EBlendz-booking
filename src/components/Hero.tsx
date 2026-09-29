@@ -4,11 +4,13 @@ import { siteConfig } from "@/lib/siteConfig";
 export function Hero() {
   return (
     <section id="top" className="relative flex min-h-[88vh] flex-col justify-end overflow-hidden">
-      {/* Big faded logo in the empty space */}
-      <Logo
-        className="pointer-events-none absolute left-1/2 top-16 hidden h-[460px] w-[460px] -translate-x-1/2 opacity-20 md:block"
-        decorative
-      />
+      {/* Invisible box the same width as the content, so the logo lines up with it */}
+      <div className="pointer-events-none absolute inset-0 mx-auto hidden max-w-6xl xl:block">
+        <Logo
+          className="absolute right-6 top-10 h-[560px] w-[560px] opacity-25"
+          decorative
+        />
+      </div>
 
       <div className="relative mx-auto w-full max-w-6xl px-4 pb-14 sm:px-6">
         <p className="font-mono text-xs uppercase tracking-[0.3em] text-muted">
@@ -26,7 +28,7 @@ export function Hero() {
 
           <div className="flex shrink-0 gap-3">
             
-              <a
+            <a
               href="#book"
               className="whitespace-nowrap rounded-full bg-gold px-6 py-3 font-semibold text-ink transition hover:bg-gold-soft"
             >
