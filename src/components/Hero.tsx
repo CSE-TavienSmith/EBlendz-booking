@@ -31,6 +31,7 @@ export function Hero() {
                     </div>
                 </div>
             </div>
+            <div className="stripe h-3 w-full" aria-hidden="true" />
         </section>
     );
 }

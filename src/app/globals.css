@@ -25,3 +25,29 @@ body {
   color: var(--color-bone);
   font-family: var(--font-sans), system-ui, sans-serif;
 }
+
+/* Barber-pole stripe in brand colors */
+.stripe {
+  background: repeating-linear-gradient(
+    -45deg,
+    var(--color-gold) 0 10px,
+    var(--color-ink) 10px 20px,
+    var(--color-bone) 20px 30px,
+    var(--color-ink) 30px 40px
+  );
+}
+
+/* Scrolling ticker */
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+
+.marquee {
+  animation: marquee 28s linear infinite;
+}
+
+/* Respect people who turn off motion in their device settings */
+@media (prefers-reduced-motion: reduce) {
+  .marquee { animation: none; }
+}
