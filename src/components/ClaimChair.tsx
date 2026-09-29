@@ -26,7 +26,7 @@ export function ClaimChair() {
           Book at the Studio
         </Link>
         <Link
-          href="/book?type=TRAVEL"
+          href="/book?type=TRAVEL_CUTZ"
           className="rounded-full border border-bone/40 px-8 py-4 font-semibold transition hover:border-gold hover:text-gold"
         >
           Book a Travel Cut

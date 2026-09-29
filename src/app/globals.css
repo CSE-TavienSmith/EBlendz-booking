@@ -47,12 +47,6 @@ body {
   animation: marquee 28s linear infinite;
 }
 
-/* Respect people who turn off motion in their device settings */
-@media (prefers-reduced-motion: reduce) {
-  .marquee { animation: none; }
-  .reveal { opacity: 1; transform: none; transition: none; }
-}
-
 /* Scroll reveal: starts invisible and slightly lower, then fades up */
 .reveal {
   opacity: 0;
@@ -62,4 +56,10 @@ body {
 .reveal.is-visible {
   opacity: 1;
   transform: none;
+}
+
+/* Respect people who turn off motion in their device settings */
+@media (prefers-reduced-motion: reduce) {
+  .marquee { animation: none; }
+  .reveal { opacity: 1; transform: none; transition: none; }
 }

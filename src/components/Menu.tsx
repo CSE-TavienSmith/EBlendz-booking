@@ -28,7 +28,7 @@ export function Menu({ services }: { services: Service[] }) {
                     <li key={s.id} className="flex items-baseline gap-4 border-b border-line py-4">
                       <span className="text-lg font-medium">{s.name}</span>
                       <span className="flex-1 border-b border-dotted border-line" aria-hidden="true" />
-                      <span className="font-mono text-sm text-muted">{formatDuration(s.durationMinutes)}</span>
+                      <span className="whitespace-nowrap font-mono text-sm text-muted">{formatDuration(s.durationMinutes)}</span>
                       <span className="w-16 text-right font-serif text-2xl italic text-gold">
                         {formatPrice(s.priceCents)}
                       </span>

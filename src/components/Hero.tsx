@@ -1,4 +1,5 @@
 import { Logo } from "@/components/Logo";
+import { siteConfig } from "@/lib/siteConfig";
 
 export function Hero() {
   return (
@@ -11,7 +12,7 @@ export function Hero() {
 
       <div className="relative mx-auto w-full max-w-6xl px-4 pb-14 sm:px-6">
         <p className="font-mono text-xs uppercase tracking-[0.3em] text-muted">
-          Columbia, SC · By appointment only
+          {siteConfig.city} · By appointment only
         </p>
 
         <h1 className="mt-4 font-display text-[22vw] uppercase leading-[0.85] sm:text-[17vw] lg:text-[13rem]">
