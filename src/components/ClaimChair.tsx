@@ -15,7 +15,7 @@ export function ClaimChair() {
         Starting at ${siteConfig.studioPriceFrom}
       </p>
       <p className="mx-auto mt-4 max-w-md text-muted">
-        Pick the perfect time for you. You&apos;ll get a confirmation right after.
+        Pick the perfect time for you. You&apos;ll get a confirmation right after. Tap in with the best college barber around the city.
       </p>
 
       <div className="mt-10 flex flex-col justify-center gap-3 sm:flex-row">
