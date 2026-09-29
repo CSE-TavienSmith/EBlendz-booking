@@ -7,8 +7,7 @@ export function Hero() {
       {/* Invisible box the same width as the content, so the logo lines up with it */}
       <div className="pointer-events-none absolute inset-0 mx-auto hidden max-w-6xl xl:block">
         <Logo
-          className="absolute right-6 top-10 h-[560px] w-[560px] opacity-25"
-          decorative
+         className="absolute right-6 top-10 h-[min(560px,50vh)] w-[min(560px,50vh)] opacity-25"
         />
       </div>
 
@@ -27,7 +26,7 @@ export function Hero() {
           </p>
 
           <div className="flex shrink-0 gap-3">
-            
+
             <a
               href="#book"
               className="whitespace-nowrap rounded-full bg-gold px-6 py-3 font-semibold text-ink transition hover:bg-gold-soft"
