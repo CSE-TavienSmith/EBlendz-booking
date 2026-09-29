@@ -2,7 +2,7 @@
 
 A booking website for a local college barber. Clients see live services and prices, pick an open time, and book. Every booking goes straight into the barber's Square calendar. No more booking through DMs.
 
-> 🚧 **In progress.** Following along as I build it step by step.
+> 🚧 **In progress.** Building it step by step.
 
 ## Why I built this
 
@@ -30,7 +30,7 @@ Planned before coding, like a real software project:
 
 - [Requirements document](docs/BarberRequirements.docx)
 - [Functional & non-functional requirements](docs/barber-site-requirements.xlsx)
-- UML: use case, class, and sequence diagrams *(TODO: add images)*
+- UML: use case, class, and sequence diagrams 
 
 ## Run it locally
 
