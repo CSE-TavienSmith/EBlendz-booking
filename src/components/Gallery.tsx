@@ -3,11 +3,11 @@ import { siteConfig } from "@/lib/siteConfig";
 
 // Add photos to public/gallery and fill in `src`, e.g. "/gallery/fade-1.jpg".
 const photos = [
-  { src: "", caption: "Fade" },
-  { src: "", caption: "Taper" },
-  { src: "", caption: "Lineup" },
-  { src: "", caption: "Travel Cutz" },
-  { src: "", caption: "Fresh" },
+  { src: "/gallery/cut-1.jpg", caption: "Fade" },
+  { src: "/gallery/cut-5.jpg", caption: "Taper" },
+  { src: "/gallery/cut-3.jpg", caption: "Lineup" },
+  { src: "/gallery/cut-2.jpg", caption: "Travel Cutz" },
+  { src: "/gallery/cut-4.jpg", caption: "Fresh" },
 ];
 
 export function Gallery() {
