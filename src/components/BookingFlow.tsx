@@ -1,7 +1,9 @@
 "use client";
 
 import { useRef, useState } from "react";
+import { validateBooking, type BookingRequest, type FieldErrors } from "@/lib/booking";
 import { formatDuration, formatPrice, type AppointmentType, type Service } from "@/lib/services";
+import { siteConfig } from "@/lib/siteConfig";
 import { dayKey, formatDay, formatTime } from "@/lib/time";
 import type { TimeSlot } from "@/lib/square-services/AvailabilityService";
 
@@ -9,6 +11,8 @@ const tabs = [
   { label: "At the Studio", type: "HOME_STUDIO" },
   { label: "Travel Cutz", type: "TRAVEL_CUTZ" },
 ] as const;
+
+const emptyForm = { name: "", phone: "", email: "", address: "", note: "" };
 
 type Props = {
   services: Service[];
@@ -26,6 +30,15 @@ export function BookingFlow({ services, initialType }: Props) {
   const [slot, setSlot] = useState<TimeSlot | null>(null);
   const latestRequest = useRef(0);
 
+  // Step 3 state
+  const [form, setForm] = useState(emptyForm);
+  const [fieldErrors, setFieldErrors] = useState<FieldErrors>({});
+  const [sending, setSending] = useState(false);
+  const [notice, setNotice] = useState("");
+  const [booked, setBooked] = useState<{ service: Service; slot: TimeSlot } | null>(null);
+  const idempotencyKey = useRef<string | null>(null);
+
+  const isTravel = type === "TRAVEL_CUTZ";
   const list = services.filter((s) => s.type === type);
 
   // Unique days that have openings, in order
@@ -37,6 +50,13 @@ export function BookingFlow({ services, initialType }: Props) {
     setDay(null);
     setSlot(null);
     setStatus("idle");
+    idempotencyKey.current = null;
+  }
+
+  function chooseSlot(next: TimeSlot | null) {
+    setSlot(next);
+    setNotice("");
+    idempotencyKey.current = null; // new time = new booking attempt
   }
 
   async function pickService(service: Service) {
@@ -61,6 +81,88 @@ export function BookingFlow({ services, initialType }: Props) {
     }
   }
 
+  function updateField(name: keyof typeof emptyForm, value: string) {
+    setForm((prev) => ({ ...prev, [name]: value }));
+    setFieldErrors((prev) => ({ ...prev, [name]: undefined })); // clear that field's error
+  }
+
+  async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault(); // stop the browser from reloading the page
+    if (!selected || !slot) return;
+
+    const request: BookingRequest = {
+      serviceId: selected.id,
+      startAt: slot.startAt,
+      ...form,
+      address: isTravel ? form.address : undefined,
+    };
+
+    // Instant feedback with the same rules the server uses
+    const errors = validateBooking(request, isTravel);
+    setFieldErrors(errors);
+    if (Object.keys(errors).length > 0) return;
+
+    // Same key if they retry this exact time, so Square never books it twice
+    idempotencyKey.current ??= crypto.randomUUID();
+    setSending(true);
+    setNotice("");
+
+    try {
+      const res = await fetch("/api/bookings", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ ...request, idempotencyKey: idempotencyKey.current }),
+      });
+      const data = await res.json();
+
+      if (res.status === 201) {
+        setBooked({ service: selected, slot });
+        return;
+      }
+
+      if (res.status === 409) {
+        // Time was taken: reload the times but keep what they typed
+        await pickService(selected);
+        setNotice(data.error);
+        return;
+      }
+
+      if (data.fields) setFieldErrors(data.fields);
+      setNotice(data.error ?? "Something went wrong. Try again.");
+    } catch {
+      setNotice("Couldn't reach the server. Check your connection and try again.");
+    } finally {
+      setSending(false);
+    }
+  }
+
+  // Confirmation screen
+  if (booked) {
+    return (
+      <div className="rounded-2xl border border-gold bg-ink-2 p-8">
+        <p className="font-mono text-xs uppercase tracking-[0.25em] text-gold">Booked</p>
+        <h2 className="mt-3 font-display text-4xl uppercase sm:text-5xl">You&apos;re locked in.</h2>
+        <p className="mt-6 text-lg">
+          {booked.service.name} · {formatPrice(booked.service.priceCents)}
+        </p>
+        <p className="mt-1 text-lg">
+          {formatDay(booked.slot.startAt)} at {formatTime(booked.slot.startAt)}
+        </p>
+        <p className="mt-6 text-muted">
+          {booked.service.type === "TRAVEL_CUTZ"
+            ? `He's coming to you at: ${form.address.trim()}`
+            : "He'll text you the address before your cut."}
+        </p>
+        <p className="mt-2 text-muted">
+          Need to change it?{" "}
+          <a href={`sms:${siteConfig.phone}`} className="text-gold underline">
+            Text {siteConfig.phone}
+          </a>
+        </p>
+      </div>
+    );
+  }
+
   return (
     <div>
       {/* Studio / Travel toggle */}
@@ -73,6 +175,7 @@ export function BookingFlow({ services, initialType }: Props) {
               setType(tab.type);
               setSelected(null);
               resetTimes();
+              setNotice("");
               latestRequest.current++;
             }}
             className={`rounded-full px-5 py-2 text-sm ${
@@ -83,6 +186,7 @@ export function BookingFlow({ services, initialType }: Props) {
           </button>
         ))}
       </div>
+      {isTravel && <p className="mt-3 text-sm text-muted">{siteConfig.travelArea}</p>}
 
       {/* Step 1: pick a service */}
       <h2 className="mt-10 font-mono text-xs uppercase tracking-[0.25em] text-gold">
@@ -117,6 +221,12 @@ export function BookingFlow({ services, initialType }: Props) {
             2 — Pick a time
           </h2>
 
+          {notice && !slot && (
+            <p role="alert" className="mt-4 text-red-400">
+              {notice}
+            </p>
+          )}
+
           {status === "loading" && <p className="mt-4 text-muted">Loading open times…</p>}
 
           {status === "error" && (
@@ -141,7 +251,7 @@ export function BookingFlow({ services, initialType }: Props) {
                       type="button"
                       onClick={() => {
                         setDay(d);
-                        setSlot(null);
+                        chooseSlot(null);
                       }}
                       aria-pressed={day === d}
                       className={`shrink-0 rounded-full border px-4 py-2 text-sm ${
@@ -160,7 +270,7 @@ export function BookingFlow({ services, initialType }: Props) {
                   <button
                     key={s.startAt}
                     type="button"
-                    onClick={() => setSlot(s)}
+                    onClick={() => chooseSlot(s)}
                     aria-pressed={slot?.startAt === s.startAt}
                     className={`rounded-lg border px-3 py-3 font-mono text-sm ${
                       slot?.startAt === s.startAt
@@ -177,11 +287,108 @@ export function BookingFlow({ services, initialType }: Props) {
         </section>
       )}
 
-      {/* Temporary: shows what's in state */}
-      <p className="mt-8 font-mono text-sm text-muted">
-        Selected: {selected ? selected.name : "no cut"} ·{" "}
-        {slot ? `${formatDay(slot.startAt)} at ${formatTime(slot.startAt)}` : "no time"}
-      </p>
+      {/* Step 3: your info + confirm */}
+      {selected && slot && (
+        <form onSubmit={handleSubmit} noValidate className="mt-12 space-y-5">
+          <h2 className="font-mono text-xs uppercase tracking-[0.25em] text-gold">3 — Your info</h2>
+
+          <Field label="Name" error={fieldErrors.name}>
+            <input
+              value={form.name}
+              onChange={(e) => updateField("name", e.target.value)}
+              autoComplete="name"
+              className={inputClass}
+            />
+          </Field>
+
+          <Field label="Phone (he'll text you)" error={fieldErrors.phone}>
+            <input
+              type="tel"
+              value={form.phone}
+              onChange={(e) => updateField("phone", e.target.value)}
+              autoComplete="tel"
+              placeholder="(803) 555-1234"
+              className={inputClass}
+            />
+          </Field>
+
+          <Field label="Email (optional)" error={fieldErrors.email}>
+            <input
+              type="email"
+              value={form.email}
+              onChange={(e) => updateField("email", e.target.value)}
+              autoComplete="email"
+              className={inputClass}
+            />
+          </Field>
+
+          {isTravel && (
+            <Field label={`Address (${siteConfig.travelArea.toLowerCase()})`} error={fieldErrors.address}>
+              <input
+                value={form.address}
+                onChange={(e) => updateField("address", e.target.value)}
+                autoComplete="street-address"
+                className={inputClass}
+              />
+            </Field>
+          )}
+
+          <Field label="Anything he should know? (optional)" error={fieldErrors.note}>
+            <textarea
+              value={form.note}
+              onChange={(e) => updateField("note", e.target.value)}
+              rows={3}
+              maxLength={300}
+              className={inputClass}
+            />
+          </Field>
+
+          {/* Summary + submit */}
+          <div className="rounded-xl border border-line bg-ink-2 p-5">
+            <p className="text-lg">
+              {selected.name} · {formatPrice(selected.priceCents)}
+            </p>
+            <p className="text-muted">
+              {formatDay(slot.startAt)} at {formatTime(slot.startAt)} · {formatDuration(selected.durationMinutes)}
+            </p>
+          </div>
+
+          {notice && (
+            <p role="alert" className="text-red-400">
+              {notice}
+            </p>
+          )}
+
+          <button
+            type="submit"
+            disabled={sending}
+            className="w-full rounded-full bg-gold px-6 py-4 font-semibold text-ink transition hover:bg-gold-soft disabled:opacity-50"
+          >
+            {sending ? "Booking…" : "Book it"}
+          </button>
+        </form>
+      )}
     </div>
+  );
+}
+
+const inputClass =
+  "w-full rounded-lg border border-line bg-ink px-4 py-3 text-bone placeholder:text-muted focus:border-gold focus:outline-none";
+
+function Field({
+  label,
+  error,
+  children,
+}: {
+  label: string;
+  error?: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <label className="block">
+      <span className="mb-2 block text-sm text-muted">{label}</span>
+      {children}
+      {error && <span className="mt-1 block text-sm text-red-400">{error}</span>}
+    </label>
   );
 }

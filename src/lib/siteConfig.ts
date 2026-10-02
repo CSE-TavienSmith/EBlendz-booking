@@ -8,4 +8,5 @@ export const siteConfig = {
   phoneTextOnly: true,     // he prefers texts, no calls
   hours: "By appointment only",
   studioPriceFrom: 20,
+    travelArea: "Within 20 minutes of USC campus",
 };
