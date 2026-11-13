@@ -17,11 +17,12 @@ export const revalidate = 300;
 async function getServices(): Promise<Service[]> {
   try {
     const services = await new CatalogService().listServices();
-    return services.length > 0 ? services : sampleServices; 
+    if (services.length > 0) return services;
   } catch (error) {
     console.error("Could not load services from Square:", error);
-    return sampleServices;
   }
+  // Sample prices are only for local dev. Live, an empty menu shows "text for prices".
+  return process.env.NODE_ENV === "production" ? [] : sampleServices;
 }
 export default async function Home() {
   const services = await getServices();

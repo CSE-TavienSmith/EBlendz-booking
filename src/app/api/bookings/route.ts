@@ -1,12 +1,35 @@
-import { normalizePhone, validateBooking, type BookingRequest } from "@/lib/booking";
+import { BOOKING_WINDOW_DAYS, normalizePhone, validateBooking, type BookingRequest } from "@/lib/booking";
 import { AvailabilityService } from "@/lib/square-services/AvailabilityService";
 import { BookingService } from "@/lib/square-services/BookingService";
 import { CatalogService } from "@/lib/square-services/CatalogService";
 import { CustomerService } from "@/lib/square-services/CustomerService";
 
-type Body = BookingRequest & { idempotencyKey: string };
+type Body = BookingRequest & { idempotencyKey: string; website?: string };
+
+// Simple spam guard: max 5 booking attempts per IP every 10 minutes.
+// Lives in memory, so each server instance counts on its own. Good enough for one barber.
+const WINDOW_MS = 10 * 60 * 1000;
+const MAX_ATTEMPTS = 5;
+const attempts = new Map<string, number[]>();
+
+function tooManyAttempts(ip: string): boolean {
+  const now = Date.now();
+  const recent = (attempts.get(ip) ?? []).filter((t) => now - t < WINDOW_MS);
+  recent.push(now);
+  attempts.set(ip, recent);
+  return recent.length > MAX_ATTEMPTS;
+}
 
 export async function POST(request: Request) {
+  // 0. Slow down bots hammering the form
+  const ip = request.headers.get("x-forwarded-for")?.split(",")[0].trim() ?? "unknown";
+  if (tooManyAttempts(ip)) {
+    return Response.json(
+      { error: "Too many tries. Wait a few minutes or text to book." },
+      { status: 429 }
+    );
+  }
+
   // 1. Read the JSON body
   let body: Body;
   try {
@@ -19,6 +42,11 @@ export async function POST(request: Request) {
   const required = [body?.serviceId, body?.startAt, body?.name, body?.phone, body?.idempotencyKey];
   if (required.some((value) => typeof value !== "string")) {
     return Response.json({ error: "Missing required fields" }, { status: 400 });
+  }
+
+  // Honeypot filled in = a bot. Pretend it worked so it doesn't retry.
+  if (body.website) {
+    return Response.json({ bookingId: "ok" }, { status: 201 });
   }
 
   try {
@@ -37,7 +65,7 @@ export async function POST(request: Request) {
     }
 
     // 5. Make sure the time is still open right now
-    const slots = await new AvailabilityService().findSlots(service.id, 7);
+    const slots = await new AvailabilityService().findSlots(service.id, BOOKING_WINDOW_DAYS);
     const slot = slots.find((s) => s.startAt === body.startAt);
     if (!slot) {
       return Response.json(

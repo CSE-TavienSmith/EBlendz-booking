@@ -13,16 +13,18 @@ My friend cuts hair while going to school and working another job, and he was bo
 - **Next.js** (App Router) + **React**
 - **TypeScript**
 - **Tailwind CSS**
-- **Square APIs**: Catalog, Bookings, Customers *(planned)*
+- **Square APIs**: Catalog, Bookings, Customers (OAuth, buyer-level scopes)
 - **Vercel** for hosting *(planned)*
 
 ## Features
 
-- [ ] Live services and prices from Square
-- [ ] Pick a date and see open times
-- [ ] Book an appointment (studio or travel cut)
-- [ ] Handles a slot getting taken mid-booking
-- [ ] Gallery, about, and contact sections
+- [x] Live services and prices from Square
+- [x] Pick a date and see open times
+- [x] Book an appointment (studio or travel cut)
+- [x] Handles a slot getting taken mid-booking
+- [x] Gallery, about, and contact sections
+- [x] Falls back to "text to book" if Square is down
+- [x] Spam protection on the booking form (honeypot + rate limit)
 
 ## Design docs
 
@@ -36,6 +38,7 @@ Planned before coding, like a real software project:
 
 ```bash
 npm install
+cp .env.example .env.local   # then fill in your Square sandbox keys
 npm run dev
 ```
 

@@ -1,7 +1,8 @@
 import Link from "next/link";
 import { BookingFlow } from "@/components/BookingFlow";
 import { CatalogService } from "@/lib/square-services/CatalogService";
-import type { AppointmentType } from "@/lib/services";
+import type { AppointmentType, Service } from "@/lib/services";
+import { siteConfig } from "@/lib/siteConfig";
 
 type Props = {
   searchParams: Promise<{ type?: string }>;
@@ -10,7 +11,14 @@ type Props = {
 export default async function BookPage({ searchParams }: Props) {
   const { type } = await searchParams;
   const initialType: AppointmentType = type === "TRAVEL_CUTZ" ? "TRAVEL_CUTZ" : "HOME_STUDIO";
-  const services = await new CatalogService().listServices();
+
+  // If Square is down, show the text-to-book fallback instead of crashing (NFR8)
+  let services: Service[] = [];
+  try {
+    services = await new CatalogService().listServices();
+  } catch (error) {
+    console.error("Could not load services for /book:", error);
+  }
 
   return (
     <main className="mx-auto max-w-3xl px-4 py-16 sm:px-6">
@@ -20,7 +28,17 @@ export default async function BookPage({ searchParams }: Props) {
       <h1 className="mt-6 font-display text-5xl uppercase sm:text-6xl">Book a cut.</h1>
 
       <div className="mt-10">
-        <BookingFlow services={services} initialType={initialType} />
+        {services.length > 0 ? (
+          <BookingFlow services={services} initialType={initialType} />
+        ) : (
+          <p className="text-lg text-muted">
+            Online booking is down for a minute.{" "}
+            <a href={`sms:${siteConfig.phone}`} className="text-gold underline">
+              Text {siteConfig.phone}
+            </a>{" "}
+            to book.
+          </p>
+        )}
       </div>
     </main>
   );

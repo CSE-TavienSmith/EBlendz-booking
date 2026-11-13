@@ -12,7 +12,7 @@ const tabs = [
   { label: "Travel Cutz", type: "TRAVEL_CUTZ" },
 ] as const;
 
-const emptyForm = { name: "", phone: "", email: "", address: "", note: "" };
+const emptyForm = { name: "", phone: "", email: "", address: "", note: "", website: "" };
 
 type Props = {
   services: Service[];
@@ -291,6 +291,19 @@ export function BookingFlow({ services, initialType }: Props) {
       {selected && slot && (
         <form onSubmit={handleSubmit} noValidate className="mt-12 space-y-5">
           <h2 className="font-mono text-xs uppercase tracking-[0.25em] text-gold">3 — Your info</h2>
+
+          {/* Honeypot: hidden from people, but spam bots fill it in. The server rejects it if filled. */}
+          <div aria-hidden="true" className="absolute -left-[9999px] h-0 w-0 overflow-hidden">
+            <label>
+              Website
+              <input
+                tabIndex={-1}
+                autoComplete="off"
+                value={form.website}
+                onChange={(e) => updateField("website", e.target.value)}
+              />
+            </label>
+          </div>
 
           <Field label="Name" error={fieldErrors.name}>
             <input

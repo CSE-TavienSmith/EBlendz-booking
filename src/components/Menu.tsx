@@ -14,6 +14,15 @@ export function Menu({ services }: { services: Service[] }) {
 
       <div className="mt-10 grid gap-12 lg:grid-cols-[2fr_1fr]">
         <div>
+          {services.length === 0 && (
+            <p className="text-lg text-muted">
+              Prices are loading slowly right now.{" "}
+              <a href={`sms:${siteConfig.phone}`} className="text-gold underline">
+                Text {siteConfig.phone}
+              </a>{" "}
+              for prices and times.
+            </p>
+          )}
           {groups.map((group) => {
             const list = services.filter((s) => s.type === group.type);
             if (list.length === 0) return null;

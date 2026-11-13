@@ -1,5 +1,8 @@
 // Shared by the browser (instant feedback) and the server (the real check).
 
+// How far ahead customers can book (Square allows up to 32 days per search)
+export const BOOKING_WINDOW_DAYS = 30;
+
 export type BookingRequest = {
   serviceId: string;
   startAt: string;

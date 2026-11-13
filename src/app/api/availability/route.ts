@@ -1,3 +1,4 @@
+import { BOOKING_WINDOW_DAYS } from "@/lib/booking";
 import { AvailabilityService } from "@/lib/square-services/AvailabilityService";
 
 export async function GET(request: Request) {
@@ -10,7 +11,7 @@ export async function GET(request: Request) {
   }
 
   try {
-    const slots = await new AvailabilityService().findSlots(serviceId, 7);
+    const slots = await new AvailabilityService().findSlots(serviceId, BOOKING_WINDOW_DAYS);
     return Response.json(slots);
   } catch (error) {
     console.error("Availability lookup failed:", error);
