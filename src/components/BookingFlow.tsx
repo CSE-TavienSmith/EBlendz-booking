@@ -346,9 +346,10 @@ export function BookingFlow({ services, initialType }: Props) {
             </Field>
           )}
 
-          <Field label="Anything he should know? (optional)" error={fieldErrors.note}>
+          <Field label="What cut are you looking for? Any enhancements?" error={fieldErrors.note}>
             <textarea
               value={form.note}
+              placeholder="e.g. Low taper fade with a lineup, plus beard enhancements"
               onChange={(e) => updateField("note", e.target.value)}
               rows={3}
               maxLength={300}
