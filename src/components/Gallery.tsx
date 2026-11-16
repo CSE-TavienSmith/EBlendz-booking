@@ -1,13 +1,17 @@
 import Image from "next/image";
 import { siteConfig } from "@/lib/siteConfig";
 
-// Add photos to public/gallery and fill in `src`, e.g. "/gallery/fade-1.jpg".
+// Add photos to public/gallery and list them here, newest first.
+// `alt` describes the cut for screen readers (it isn't shown on the page).
 const photos = [
-  { src: "/gallery/cut-1.jpg", caption: "Fade" },
-  { src: "/gallery/cut-5.jpg", caption: "Taper" },
-  { src: "/gallery/cut-3.jpg", caption: "Lineup" },
-  { src: "/gallery/cut-2.jpg", caption: "Travel Cutz" },
-  { src: "/gallery/cut-4.jpg", caption: "Fresh" },
+  { src: "/gallery/cut-10.jpg", alt: "Twists with a taper and lineup" },
+  { src: "/gallery/cut-9.jpg", alt: "Curly top with a taper and sharp lineup" },
+  { src: "/gallery/cut-6.jpg", alt: "Waves with a sharp lineup and beard" },
+  { src: "/gallery/cut-7.jpg", alt: "Locs pulled back with a taper and lineup" },
+  { src: "/gallery/cut-8.jpg", alt: "Twists with a crisp lineup" },
+  { src: "/gallery/cut-1.jpg", alt: "Fade" },
+  { src: "/gallery/cut-5.jpg", alt: "Taper" },
+  { src: "/gallery/cut-3.jpg", alt: "Lineup" },
 ];
 
 export function Gallery() {
@@ -37,7 +41,7 @@ export function Gallery() {
               {photo.src ? (
                 <Image
                   src={photo.src}
-                  alt={`${photo.caption} by Eblendz`}
+                  alt={`${photo.alt} by Eblendz`}
                   fill
                   sizes="288px"
                   className="object-cover"
@@ -50,11 +54,21 @@ export function Gallery() {
                 </div>
               )}
             </div>
-            <figcaption className="mt-3 font-mono text-xs uppercase tracking-[0.2em] text-muted">
-              {photo.caption}
-            </figcaption>
           </figure>
         ))}
+      </div>
+
+      {/* One line under the strip instead of a title on every photo */}
+      <div className="mx-auto mt-8 flex max-w-6xl flex-wrap items-baseline justify-between gap-4 px-4 sm:px-6">
+        <p className="font-serif text-3xl italic text-bone sm:text-4xl">
+          Fresh out the chair! <span className="whitespace-nowrap text-gold">You slide next.</span>
+        </p>
+        <a
+          href="/book"
+          className="font-mono text-xs uppercase tracking-[0.2em] text-gold hover:text-gold-soft"
+        >
+          Claim your chair ↗
+        </a>
       </div>
     </section>
   );
