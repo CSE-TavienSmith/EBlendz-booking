@@ -4,13 +4,13 @@ const options = [
     {
         label: "Home studio",
         title: "At the Studio",
-        price: "From $20",
+        price: "From $25",
         body: "Pull up to the chair. The exact address is sent after you book.",
     },
     {
         label: "Travel cutz",
         title: "I Come To You",
-        price: "$25–30",
+        price: "$30–32",
         body: "Dorm, apartment, or event day. The clippers travel. The lineup stays sharp.",
     },
 ];
