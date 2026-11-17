@@ -4,12 +4,14 @@ const options = [
     {
         label: "Home studio",
         title: "At the Studio",
+        href: "/book?type=HOME_STUDIO",
         price: "From $25",
         body: "Pull up to the chair. The exact address is sent after you book.",
     },
     {
         label: "Travel cutz",
         title: "I Come To You",
+        href: "/book?type=TRAVEL_CUTZ",
         price: "$30–32",
         body: "Dorm, apartment, or event day. The clippers travel. The lineup stays sharp.",
     },
@@ -27,7 +29,7 @@ export function TheCutz() {
                 {options.map((option, i) => (
                     <Reveal key={option.title} delay={i * 120} className="h-full">
                         <a
-                            href="#book"
+                            href={option.href}
                             className="group flex h-full flex-col rounded-2xl border border-line bg-ink-2 p-7 transition hover:border-gold"
                         >
                             <p className="font-mono text-xs uppercase tracking-[0.25em] text-muted">

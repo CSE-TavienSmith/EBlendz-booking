@@ -3,7 +3,7 @@ import { siteConfig } from "@/lib/siteConfig";
 
 export function Hero() {
   return (
-    <section id="top" className="relative flex min-h-[88vh] flex-col justify-end overflow-hidden">
+    <section id="top" className="relative flex min-h-[78vh] flex-col sm:min-h-[88vh] justify-end overflow-hidden">
       {/* Invisible box the same width as the content, so the logo lines up with it */}
       <div className="pointer-events-none absolute inset-0 mx-auto hidden max-w-6xl xl:block">
         <Logo
@@ -13,6 +13,7 @@ export function Hero() {
       </div>
 
       <div className="relative mx-auto w-full max-w-6xl px-4 pb-14 sm:px-6">
+        <Logo decorative className="mb-8 h-48 w-48 xl:hidden" />
         <p className="font-mono text-xs uppercase tracking-[0.3em] text-muted">
           {siteConfig.city} · By appointment only
         </p>

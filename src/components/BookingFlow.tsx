@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef, useState } from "react";
-import { validateBooking, type BookingRequest, type FieldErrors } from "@/lib/booking";
+import { BOOKING_WINDOW_DAYS, validateBooking, type BookingRequest, type FieldErrors } from "@/lib/booking";
 import { formatDuration, formatPrice, type AppointmentType, type Service } from "@/lib/services";
 import { siteConfig } from "@/lib/siteConfig";
 import { dayKey, formatDay, formatTime } from "@/lib/time";
@@ -236,7 +236,7 @@ export function BookingFlow({ services, initialType }: Props) {
           )}
 
           {status === "idle" && slots.length === 0 && (
-            <p className="mt-4 text-muted">No openings in the next 7 days. Text to ask about other times.</p>
+            <p className="mt-4 text-muted">No openings in the next {BOOKING_WINDOW_DAYS} days. Text to ask about other times.</p>
           )}
 
           {days.length > 0 && (

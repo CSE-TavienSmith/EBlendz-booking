@@ -43,7 +43,7 @@ export function Gallery() {
                   src={photo.src}
                   alt={`${photo.alt} by Eblendz`}
                   fill
-                  sizes="288px"
+                  sizes="(min-width: 640px) 288px, 256px"
                   className="object-cover"
                 />
               ) : (
